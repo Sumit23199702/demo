@@ -43,32 +43,36 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-  if (!isValidBody(req.body)) {
-    return res.status(400).send({ status: "false", msg: "No Data Provided" });
-  }
+    if (!isValidBody(req.body)) {
+      return res.status(400).send({ status: "false", msg: "No Data Provided" });
+    }
 
-  if (!isValid(email)) {
-    return res.status(400).send({ status: "false", msg: "Email is Required" });
-  }
-  if (!isValid(password)) {
-    return res
-      .status(400)
-      .send({ status: "false", msg: "Password is Required" });
-  }
+    if (!isValid(email)) {
+      return res
+        .status(400)
+        .send({ status: "false", msg: "Email is Required" });
+    }
+    if (!isValid(password)) {
+      return res
+        .status(400)
+        .send({ status: "false", msg: "Password is Required" });
+    }
 
-  const findUser = await UserModel.findOne({ email, password });
-  if (!findUser) {
-    return res.status(404).send({ status: "false", msg: "User Not Found" });
-  }
-  const token = jwt.sign({ id: findUser._id }, "secretkey");
-  res.json({
-    token,
-    userID: findUser._id,
-    message: "User Logged in successfully",
-  })
+    const findUser = await UserModel.findOne({ email, password });
+    if (!findUser) {
+      return res.status(404).send({ status: "false", msg: "User Not Found" });
+    }
+
+    const token = jwt.sign({ id: findUser._id }, "secretkey");
+    res.json({
+      token,
+      userID: findUser._id,
+      message: "User Logged in successfully",
+    });
   } catch (error) {
     res.status(500).send(error);
   }
-  
+};
+
 
 module.exports = { createUser, loginUser };
