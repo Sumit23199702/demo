@@ -64,15 +64,17 @@ const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign({ id: findUser._id }, "secretkey");
-    res.json({
-      token,
-      userID: findUser._id,
-      message: "User Logged in successfully",
-    });
+    res.setHeader("x-user-key", token);
+    res
+      .status(200)
+      .send({
+        token,
+        userID: findUser._id,
+        message: "User Logged in successfully",
+      });
   } catch (error) {
     res.status(500).send(error);
   }
 };
-
 
 module.exports = { createUser, loginUser };
